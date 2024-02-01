@@ -1,0 +1,11 @@
+
+utility/*
+resource-service/*
+jdbc-support/*
+core/target/*
+config-client-service/*
+cache/redis-cache/*
+auth-client-service/*
+admin-client-service/*
+.idea/*
+**.DS_Store
