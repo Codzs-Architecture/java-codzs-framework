@@ -18,20 +18,29 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
 		<codzs-framework-version>0.0.1-SNAPSHOT</codzs-framework-version>
-		<spring-boot-version>3.1.1-SNAPSHOT</spring-boot-version>
-		<spring-boot-starter-parent-version>3.1.0</spring-boot-starter-parent-version>
-		<spring-cloud.version>2022.0.3</spring-cloud.version>
-		<spring-boot-admin.version>3.0.4</spring-boot-admin.version>
-		<spring-cloud-build-tools-version>4.0.3</spring-cloud-build-tools-version>
+		<spring-boot-version>3.5.0</spring-boot-version>
+		<spring-boot-starter-parent-version>3.5.0</spring-boot-starter-parent-version>
+		<spring-cloud.version>2025.0.0</spring-cloud.version>
+		<spring-boot-admin.version>3.5.0</spring-boot-admin.version>
+		<spring-cloud-build-tools-version>4.3.0</spring-cloud-build-tools-version>
 
-		<commons-langs-version>3.12.0</commons-langs-version>
-		<freemarker-version>2.3.31</freemarker-version>
-		<jackson-databind-version>2.14.2</jackson-databind-version>
-		<openapi-version>2.1.0</openapi-version>
+		<commons-langs-version>3.17.0</commons-langs-version>
+		<freemarker-version>2.3.34</freemarker-version>
+		<jackson-databind-version>2.19.0</jackson-databind-version>
+		<openapi-version>2.7.0</openapi-version>
 		<therapi-runtime-javadoc-version>0.15.0</therapi-runtime-javadoc-version>
-		<mysql-connector-java-version>8.0.27</mysql-connector-java-version>
-		<flyway-version>9.20.0</flyway-version>
+		<mysql-connector-java-version>9.2.0</mysql-connector-java-version>
+		<flyway-version>11.7.2</flyway-version>
 		<logback-json-classic-version>0.1.5</logback-json-classic-version>
+
+		<maven-compiler-plugin-version>3.13.0</maven-compiler-plugin-version>
+		<maven-failsafe-plugin-version>3.5.2</maven-failsafe-plugin-version>
+		<maven-checkstyle-plugin-version>3.5.0</maven-checkstyle-plugin-version>
+		<maven-resources-plugin-version>3.3.1</maven-resources-plugin-version>
+		<maven-antrun-plugin-version>3.5.0</maven-antrun-plugin-version>
+		<spring-javaformat-maven-plugin-version>0.0.48</spring-javaformat-maven-plugin-version>
+		<flatten-maven-plugin-version>1.6.0</flatten-maven-plugin-version>
+		<git-commit-id-maven-plugin-version>7.0.1</git-commit-id-maven-plugin-version>
 	</properties>
 
 	<dependencyManagement>
@@ -73,8 +82,8 @@
 
 			<!-- Start| dependency for mysql -->
 			<dependency>
-				<groupId>mysql</groupId>
-				<artifactId>mysql-connector-java</artifactId>
+				<groupId>com.mysql</groupId>
+				<artifactId>mysql-connector-j</artifactId>
 				<scope>runtime</scope>
 				<version>${mysql-connector-java-version}</version>
 			</dependency>

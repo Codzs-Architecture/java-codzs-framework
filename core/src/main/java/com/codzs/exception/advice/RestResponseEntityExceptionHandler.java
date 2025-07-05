@@ -1,8 +1,5 @@
 package com.codzs.exception.advice;
 
-import com.codzs.exception.exception.*;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import org.springframework.boot.json.JsonParseException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -15,6 +12,18 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+
+import com.codzs.exception.exception.AppVersionUnsupportedException;
+import com.codzs.exception.exception.AuthenticationException;
+import com.codzs.exception.exception.BusinessException;
+import com.codzs.exception.exception.ConfigurationException;
+import com.codzs.exception.exception.NoDataFoundException;
+import com.codzs.exception.exception.PrivilegeException;
+import com.codzs.exception.exception.ResourceNotFoundException;
+import com.codzs.exception.exception.ServerException;
+import com.codzs.exception.exception.ValidationException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 
 @RestControllerAdvice
 public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
