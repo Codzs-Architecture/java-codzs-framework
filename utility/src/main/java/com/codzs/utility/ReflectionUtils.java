@@ -11,6 +11,7 @@ public class ReflectionUtils {
     }
 
     // to get a class instance by class name and constructor parameters
+    @SuppressWarnings("unchecked")
     public static <T> T getInstance(String className, Class<?>[] parameterTypes, Object[] parameterValues) {
         try {
             Class<?> clazz = Class.forName(className);

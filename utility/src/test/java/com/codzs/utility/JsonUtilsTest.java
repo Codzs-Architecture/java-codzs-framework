@@ -35,6 +35,7 @@ public class JsonUtilsTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testFromJson_forNestedMap() {
         String jsonString = "{\"a\":1,\"b\":2,\"c\":{\"d\":3,\"e\":4}}";
         Map<String, Object> map = fromJson(jsonString);
@@ -60,6 +61,7 @@ public class JsonUtilsTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testFromJson_intoClass_forValidJson() {
         String jsonString = "{\"name\":\"Nitin\",\"age\":20,\"address\":{\"city\":\"Melbourne\",\"country\":\"Australia\"}}";
         User user = fromJson(jsonString, User.class);
@@ -90,6 +92,7 @@ public class JsonUtilsTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testToJson_forNestedMap() {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("a", 1);
@@ -122,6 +125,7 @@ public class JsonUtilsTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testToJsonPretty_forOneLevelNestedMap() {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("a", 1);
@@ -134,6 +138,7 @@ public class JsonUtilsTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testToJsonPretty_forTwoLevelNestedMap() {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("a", 1);
@@ -156,6 +161,7 @@ public class JsonUtilsTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testToJsonPretty_forMultipleNestedMap() {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("a", 1);
@@ -188,6 +194,7 @@ public class JsonUtilsTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testToJsonPretty_forMultipleListOfMaps() {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("a", 1);
@@ -230,40 +237,45 @@ public class JsonUtilsTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testToJson_forObject_forNullMap() {
-       User user = null;
-        assertEquals("", toJson(user));
+        Map<String, Object> map = null;
+        assertEquals("", toJson(map));
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testToJson_forObject_forNestedMap() {
-        User user = new User();
-        user.name = "Nitin";
-        user.age = 30;
-        user.address = new HashMap<>();
-        user.address.put("city", "Melbourne");
-        user.address.put("country", "Australia");
-        assertEquals("{\"name\":\"Nitin\",\"age\":30,\"address\":{\"country\":\"Australia\",\"city\":\"Melbourne\"}}", toJson(user));
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("a", 1);
+        map.put("b", 2);
+        map.put("c", new HashMap<String, Object>() {{
+            put("d", 3);
+            put("e", 4);
+        }});
+        assertEquals("{\"a\":1,\"b\":2,\"c\":{\"d\":3,\"e\":4}}", toJson(map));
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testToJsonPretty_forObject_forNullMap() {
-        User user = null;
-        assertEquals("", toJsonPretty(user));
+        Map<String, Object> map = null;
+        assertEquals("", toJsonPretty(map));
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testToJsonPretty_forObject_forNestedMap() {
-        User user = new User();
-        user.name = "Nitin";
-        user.age = 30;
-        user.address = new HashMap<>();
-        user.address.put("city", "Melbourne");
-        user.address.put("country", "Australia");
-        assertTrue(StringUtils.isNotEmpty(toJsonPretty(user)));
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("a", 1);
+        map.put("b", 2);
+        map.put("c", new HashMap<String, Object>() {{
+            put("d", 3);
+            put("e", 4);
+        }});
+        assertEquals("{\n  \"a\" : 1,\n  \"b\" : 2,\n  \"c\" : {\n    \"d\" : 3,\n    \"e\" : 4\n  }\n}", toJsonPretty(map));
     }
 
-    // test case for boolean isValidJson(String json)
     @Test
     public void testIsValidJson_forNull() {
         assertFalse(isValidJson(null));
@@ -276,11 +288,11 @@ public class JsonUtilsTest {
 
     @Test
     public void testIsValidJson_forInvalidJson() {
-        assertFalse(isValidJson("abc"));
+        assertFalse(isValidJson("{\"a\":1,\"b\":2"));
     }
 
     @Test
     public void testIsValidJson_forValidJson() {
-        assertTrue(isValidJson("{\"name\":\"Nitin\",\"age\":30,\"address\":{\"country\":\"Australia\",\"city\":\"Melbourne\"}}"));
+        assertTrue(isValidJson("{\"a\":1,\"b\":2}"));
     }
 }

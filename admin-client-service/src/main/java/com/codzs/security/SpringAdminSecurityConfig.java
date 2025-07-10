@@ -11,15 +11,13 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SpringAdminSecurityConfig {
     @Bean
     public SecurityFilterChain adminServiceFilterChain(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
+        http.authorizeHttpRequests(authorize -> authorize
                 .requestMatchers("/management/**").permitAll()
                 .requestMatchers("/actuator/**").hasRole("MANAGEMENT_ADMIN")
                 .anyRequest().authenticated()
-                .and()
-                .httpBasic()
-                .and()
-                .csrf()
-                .disable();
+            )
+            .httpBasic(httpBasic -> {})
+            .csrf(csrf -> csrf.disable());
 
         return http.build();
     }

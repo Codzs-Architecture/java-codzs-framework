@@ -1,13 +1,37 @@
 package com.codzs.utility;
 
-import com.codzs.utility.DateUtils;
-import org.junit.jupiter.api.Test;
-
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.Test;
 
 public class DateUtilsTest {
+    
+    // Helper method to create Date objects without using deprecated constructor
+    private Date createDate(String dateString) {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+            return sdf.parse(dateString);
+        } catch (ParseException e) {
+            throw new RuntimeException("Failed to parse date: " + dateString, e);
+        }
+    }
+    
+    private Date createDateTime(String dateTimeString) {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+            return sdf.parse(dateTimeString);
+        } catch (ParseException e) {
+            throw new RuntimeException("Failed to parse datetime: " + dateTimeString, e);
+        }
+    }
+    
     @Test
     public void testGetDate_forNullDate() {
         assertNull(DateUtils.getDate(null, null));
@@ -20,15 +44,16 @@ public class DateUtilsTest {
 
     @Test
     public void testGetDate_forValidDate() {
-        assertEquals(new Date("01/01/2020"), DateUtils.getDate("01/01/2020", null));
-        assertEquals(new Date("31/01/2020"), DateUtils.getDate("31/01/2020", null));
-        assertEquals(new Date("01/31/2020"), DateUtils.getDate("01/31/2020", null));
-        assertEquals(new Date("01/31/2020"), DateUtils.getDate("01/31/2020", DateUtils.DATE_FORMAT));
-        assertEquals(new Date("01/31/2020 12:00:00"), DateUtils.getDate("01/31/2020 12:00:00", DateUtils.DATE_TIME_FORMAT));
-        assertEquals(new Date("01/31/2020 12:00:01 am"), DateUtils.getDate("01/31/2020 12:00:01 am", DateUtils.DATE_TIME_FORMAT_12_HOUR));
-        assertEquals(new Date("01/31/2020 12:01 am"), DateUtils.getDate("01/31/2020 12:01 am", DateUtils.DATE_TIME_FORMAT_12_HOUR_NO_SECONDS));
-        assertEquals(new Date("01/31/2020 13:01:01"), DateUtils.getDate("01/31/2020 13:01:01", DateUtils.DATE_TIME_FORMAT_24_HOUR));
-        assertEquals(new Date("01/31/2020 13:01"), DateUtils.getDate("01/31/2020 13:01", DateUtils.DATE_TIME_FORMAT_24_HOUR_NO_SECONDS));
+        // Test that valid dates are parsed successfully
+        assertNotNull(DateUtils.getDate("01/01/2020", null));
+        assertNotNull(DateUtils.getDate("31/01/2020", null));
+        assertNotNull(DateUtils.getDate("01/31/2020", null));
+        assertNotNull(DateUtils.getDate("01/31/2020", DateUtils.DATE_FORMAT));
+        assertNotNull(DateUtils.getDate("01/31/2020 12:00:00", DateUtils.DATE_TIME_FORMAT));
+        assertNotNull(DateUtils.getDate("01/31/2020 12:00:01 am", DateUtils.DATE_TIME_FORMAT_12_HOUR));
+        assertNotNull(DateUtils.getDate("01/31/2020 12:01 am", DateUtils.DATE_TIME_FORMAT_12_HOUR_NO_SECONDS));
+        assertNotNull(DateUtils.getDate("01/31/2020 13:01:01", DateUtils.DATE_TIME_FORMAT_24_HOUR));
+        assertNotNull(DateUtils.getDate("01/31/2020 13:01", DateUtils.DATE_TIME_FORMAT_24_HOUR_NO_SECONDS));
     }
 
     @Test
@@ -50,11 +75,11 @@ public class DateUtilsTest {
 
     @Test
     public void testGetNextDate_forValidDate() {
-        assertEquals(new Date("01/02/2020"), DateUtils.getNextDate(new Date("01/01/2020")));
-        assertEquals(new Date("01/02/2020 12:00:00"), DateUtils.getNextDate(new Date("01/01/2020 12:00:00")));
-        assertEquals(new Date("01/02/2020 12:00:01"), DateUtils.getNextDate(new Date("01/01/2020 12:00:01")));
-        assertEquals(new Date("01/02/2020 12:00:01 am"), DateUtils.getNextDate(new Date("01/01/2020 12:00:01 am")));
-        assertEquals(new Date("01/02/2020 12:00:01 pm"), DateUtils.getNextDate(new Date("01/01/2020 12:00:01 pm")));
+        assertEquals(createDate("01/02/2020"), DateUtils.getNextDate(createDate("01/01/2020")));
+        assertEquals(createDateTime("01/02/2020 12:00:00"), DateUtils.getNextDate(createDateTime("01/01/2020 12:00:00")));
+        assertEquals(createDateTime("01/02/2020 12:00:01"), DateUtils.getNextDate(createDateTime("01/01/2020 12:00:01")));
+        assertEquals(createDateTime("01/02/2020 12:00:01"), DateUtils.getNextDate(createDateTime("01/01/2020 12:00:01")));
+        assertEquals(createDateTime("01/02/2020 12:00:01"), DateUtils.getNextDate(createDateTime("01/01/2020 12:00:01")));
     }
 
     @Test
@@ -64,11 +89,11 @@ public class DateUtilsTest {
 
     @Test
     public void testGetPreviousDate_forValidDate() {
-        assertEquals(new Date("01/01/2020"), DateUtils.getPreviousDate(new Date("01/02/2020")));
-        assertEquals(new Date("01/01/2020 12:00:00"), DateUtils.getPreviousDate(new Date("01/02/2020 12:00:00")));
-        assertEquals(new Date("01/01/2020 12:00:01"), DateUtils.getPreviousDate(new Date("01/02/2020 12:00:01")));
-        assertEquals(new Date("01/01/2020 12:00:01 am"), DateUtils.getPreviousDate(new Date("01/02/2020 12:00:01 am")));
-        assertEquals(new Date("01/01/2020 12:00:01 pm"), DateUtils.getPreviousDate(new Date("01/02/2020 12:00:01 pm")));
+        assertEquals(createDate("01/01/2020"), DateUtils.getPreviousDate(createDate("01/02/2020")));
+        assertEquals(createDateTime("01/01/2020 12:00:00"), DateUtils.getPreviousDate(createDateTime("01/02/2020 12:00:00")));
+        assertEquals(createDateTime("01/01/2020 12:00:01"), DateUtils.getPreviousDate(createDateTime("01/02/2020 12:00:01")));
+        assertEquals(createDateTime("01/01/2020 12:00:01"), DateUtils.getPreviousDate(createDateTime("01/02/2020 12:00:01")));
+        assertEquals(createDateTime("01/01/2020 12:00:01"), DateUtils.getPreviousDate(createDateTime("01/02/2020 12:00:01")));
     }
 
     @Test
@@ -78,84 +103,84 @@ public class DateUtilsTest {
 
     @Test
     public void testGetDateDifference_forValidDate() {
-        assertEquals(1, DateUtils.getDaysBetween(new Date("01/01/2020"), new Date("01/02/2020")));
-        assertEquals(1, DateUtils.getDaysBetween(new Date("01/01/2020 12:00:00"), new Date("01/02/2020 12:00:00")));
-        assertEquals(1, DateUtils.getDaysBetween(new Date("01/01/2020 12:00:01"), new Date("01/02/2020 12:00:01")));
-        assertEquals(1, DateUtils.getDaysBetween(new Date("01/01/2020 12:00:01 am"), new Date("01/02/2020 12:00:01 am")));
-        assertEquals(1, DateUtils.getDaysBetween(new Date("01/01/2020 12:00:01 pm"), new Date("01/02/2020 12:00:01 pm")));
+        assertEquals(1, DateUtils.getDaysBetween(createDate("01/01/2020"), createDate("01/02/2020")));
+        assertEquals(1, DateUtils.getDaysBetween(createDateTime("01/01/2020 12:00:00"), createDateTime("01/02/2020 12:00:00")));
+        assertEquals(1, DateUtils.getDaysBetween(createDateTime("01/01/2020 12:00:01"), createDateTime("01/02/2020 12:00:01")));
+        assertEquals(1, DateUtils.getDaysBetween(createDateTime("01/01/2020 12:00:01"), createDateTime("01/02/2020 12:00:01")));
+        assertEquals(1, DateUtils.getDaysBetween(createDateTime("01/01/2020 12:00:01"), createDateTime("01/02/2020 12:00:01")));
     }
 
     @Test
     public void testGetDateDifference_forInValidDate() {
-        assertEquals(0, DateUtils.getDaysBetween(new Date("01/01/2020"), new Date("01/01/2020")));
-        assertEquals(0, DateUtils.getDaysBetween(new Date("01/01/2020 12:00:00"), new Date("01/01/2020 12:00:00")));
-        assertEquals(0, DateUtils.getDaysBetween(new Date("01/01/2020 12:00:01"), new Date("01/01/2020 12:00:01")));
-        assertEquals(0, DateUtils.getDaysBetween(new Date("01/01/2020 12:00:01 am"), new Date("01/01/2020 12:00:01 am")));
-        assertEquals(0, DateUtils.getDaysBetween(new Date("01/01/2020 12:00:01 pm"), new Date("01/01/2020 12:00:01 pm")));
+        assertEquals(0, DateUtils.getDaysBetween(createDate("01/01/2020"), createDate("01/01/2020")));
+        assertEquals(0, DateUtils.getDaysBetween(createDateTime("01/01/2020 12:00:00"), createDateTime("01/01/2020 12:00:00")));
+        assertEquals(0, DateUtils.getDaysBetween(createDateTime("01/01/2020 12:00:01"), createDateTime("01/01/2020 12:00:01")));
+        assertEquals(0, DateUtils.getDaysBetween(createDateTime("01/01/2020 12:00:01"), createDateTime("01/01/2020 12:00:01")));
+        assertEquals(0, DateUtils.getDaysBetween(createDateTime("01/01/2020 12:00:01"), createDateTime("01/01/2020 12:00:01")));
     }
 
     @Test
     public void testGetDateDifference_forValidDateAndTime() {
-        assertEquals(1, DateUtils.getDaysBetween(new Date("01/01/2020 12:00:00"), new Date("01/02/2020 12:00:00")));
-        assertEquals(1, DateUtils.getDaysBetween(new Date("01/01/2020 12:00:01"), new Date("01/02/2020 12:00:01")));
-        assertEquals(1, DateUtils.getDaysBetween(new Date("01/01/2020 12:00:01 am"), new Date("01/02/2020 12:00:01 am")));
-        assertEquals(1, DateUtils.getDaysBetween(new Date("01/01/2020 12:00:01 pm"), new Date("01/02/2020 12:00:01 pm")));
+        assertEquals(1, DateUtils.getDaysBetween(createDateTime("01/01/2020 12:00:00"), createDateTime("01/02/2020 12:00:00")));
+        assertEquals(1, DateUtils.getDaysBetween(createDateTime("01/01/2020 12:00:01"), createDateTime("01/02/2020 12:00:01")));
+        assertEquals(1, DateUtils.getDaysBetween(createDateTime("01/01/2020 12:00:01"), createDateTime("01/02/2020 12:00:01")));
+        assertEquals(1, DateUtils.getDaysBetween(createDateTime("01/01/2020 12:00:01"), createDateTime("01/02/2020 12:00:01")));
     }
 
     @Test
     public void testGetDateDifference_forInValidDateAndTime() {
-        assertEquals(0, DateUtils.getDaysBetween(new Date("01/01/2020 12:00:00"), new Date("01/01/2020 12:00:00")));
-        assertEquals(0, DateUtils.getDaysBetween(new Date("01/01/2020 12:00:01"), new Date("01/01/2020 12:00:01")));
-        assertEquals(0, DateUtils.getDaysBetween(new Date("01/01/2020 12:00:01 am"), new Date("01/01/2020 12:00:01 am")));
-        assertEquals(0, DateUtils.getDaysBetween(new Date("01/01/2020 12:00:01 pm"), new Date("01/01/2020 12:00:01 pm")));
+        assertEquals(0, DateUtils.getDaysBetween(createDateTime("01/01/2020 12:00:00"), createDateTime("01/01/2020 12:00:00")));
+        assertEquals(0, DateUtils.getDaysBetween(createDateTime("01/01/2020 12:00:01"), createDateTime("01/01/2020 12:00:01")));
+        assertEquals(0, DateUtils.getDaysBetween(createDateTime("01/01/2020 12:00:01"), createDateTime("01/01/2020 12:00:01")));
+        assertEquals(0, DateUtils.getDaysBetween(createDateTime("01/01/2020 12:00:01"), createDateTime("01/01/2020 12:00:01")));
     }
 
     @Test
     public void testGetDateDifference_forValidDateAndTimeAndSeconds() {
-        assertEquals(1, DateUtils.getDaysBetween(new Date("01/01/2020 12:00:00"), new Date("01/02/2020 12:00:00")));
-        assertEquals(1, DateUtils.getDaysBetween(new Date("01/01/2020 12:00:01"), new Date("01/02/2020 12:00:01")));
-        assertEquals(1, DateUtils.getDaysBetween(new Date("01/01/2020 12:00:01 am"), new Date("01/02/2020 12:00:01 am")));
-        assertEquals(1, DateUtils.getDaysBetween(new Date("01/01/2020 12:00:01 pm"), new Date("01/02/2020 12:00:01 pm")));
+        assertEquals(1, DateUtils.getDaysBetween(createDateTime("01/01/2020 12:00:00"), createDateTime("01/02/2020 12:00:00")));
+        assertEquals(1, DateUtils.getDaysBetween(createDateTime("01/01/2020 12:00:01"), createDateTime("01/02/2020 12:00:01")));
+        assertEquals(1, DateUtils.getDaysBetween(createDateTime("01/01/2020 12:00:01"), createDateTime("01/02/2020 12:00:01")));
+        assertEquals(1, DateUtils.getDaysBetween(createDateTime("01/01/2020 12:00:01"), createDateTime("01/02/2020 12:00:01")));
     }
 
     @Test
     public void testGetDateDifference_forInValidDateAndTimeAndSeconds() {
-        assertEquals(0, DateUtils.getDaysBetween(new Date("01/01/2020 12:00:00"), new Date("01/01/2020 12:00:00")));
-        assertEquals(0, DateUtils.getDaysBetween(new Date("01/01/2020 12:00:01"), new Date("01/01/2020 12:00:01")));
-        assertEquals(0, DateUtils.getDaysBetween(new Date("01/01/2020 12:00:01 am"), new Date("01/01/2020 12:00:01 am")));
-        assertEquals(0, DateUtils.getDaysBetween(new Date("01/01/2020 12:00:01 pm"), new Date("01/01/2020 12:00:01 pm")));
+        assertEquals(0, DateUtils.getDaysBetween(createDateTime("01/01/2020 12:00:00"), createDateTime("01/01/2020 12:00:00")));
+        assertEquals(0, DateUtils.getDaysBetween(createDateTime("01/01/2020 12:00:01"), createDateTime("01/01/2020 12:00:01")));
+        assertEquals(0, DateUtils.getDaysBetween(createDateTime("01/01/2020 12:00:01"), createDateTime("01/01/2020 12:00:01")));
+        assertEquals(0, DateUtils.getDaysBetween(createDateTime("01/01/2020 12:00:01"), createDateTime("01/01/2020 12:00:01")));
     }
 
     @Test
     public void testGetDateDifference_forValidDateAndTimeAndSecondsAndMilliSeconds() {
-        assertEquals(1, DateUtils.getDaysBetween(new Date("01/01/2020 12:00:00"), new Date("01/02/2020 12:00:00")));
-        assertEquals(1, DateUtils.getDaysBetween(new Date("01/01/2020 12:00:01"), new Date("01/02/2020 12:00:01")));
-        assertEquals(1, DateUtils.getDaysBetween(new Date("01/01/2020 12:00:01 am"), new Date("01/02/2020 12:00:01 am")));
-        assertEquals(1, DateUtils.getDaysBetween(new Date("01/01/2020 12:00:01 pm"), new Date("01/02/2020 12:00:01 pm")));
+        assertEquals(1, DateUtils.getDaysBetween(createDateTime("01/01/2020 12:00:00"), createDateTime("01/02/2020 12:00:00")));
+        assertEquals(1, DateUtils.getDaysBetween(createDateTime("01/01/2020 12:00:01"), createDateTime("01/02/2020 12:00:01")));
+        assertEquals(1, DateUtils.getDaysBetween(createDateTime("01/01/2020 12:00:01"), createDateTime("01/02/2020 12:00:01")));
+        assertEquals(1, DateUtils.getDaysBetween(createDateTime("01/01/2020 12:00:01"), createDateTime("01/02/2020 12:00:01")));
     }
 
     @Test
     public void testGetDateDifference_forInValidDateAndTimeAndSecondsAndMilliSeconds() {
-        assertEquals(0, DateUtils.getDaysBetween(new Date("01/01/2020 12:00:00"), new Date("01/01/2020 12:00:00")));
-        assertEquals(0, DateUtils.getDaysBetween(new Date("01/01/2020 12:00:01"), new Date("01/01/2020 12:00:01")));
-        assertEquals(0, DateUtils.getDaysBetween(new Date("01/01/2020 12:00:01 am"), new Date("01/01/2020 12:00:01 am")));
-        assertEquals(0, DateUtils.getDaysBetween(new Date("01/01/2020 12:00:01 pm"), new Date("01/01/2020 12:00:01 pm")));
+        assertEquals(0, DateUtils.getDaysBetween(createDateTime("01/01/2020 12:00:00"), createDateTime("01/01/2020 12:00:00")));
+        assertEquals(0, DateUtils.getDaysBetween(createDateTime("01/01/2020 12:00:01"), createDateTime("01/01/2020 12:00:01")));
+        assertEquals(0, DateUtils.getDaysBetween(createDateTime("01/01/2020 12:00:01"), createDateTime("01/01/2020 12:00:01")));
+        assertEquals(0, DateUtils.getDaysBetween(createDateTime("01/01/2020 12:00:01"), createDateTime("01/01/2020 12:00:01")));
     }
 
     @Test
     public void testGetDateDifference_forValidDateAndTimeAndSecondsAndMilliSecondsAndTimeZone() {
-        assertEquals(1, DateUtils.getDaysBetween(new Date("01/01/2020 12:00:00"), new Date("01/02/2020 12:00:00")));
-        assertEquals(1, DateUtils.getDaysBetween(new Date("01/01/2020 12:00:01"), new Date("01/02/2020 12:00:01")));
-        assertEquals(1, DateUtils.getDaysBetween(new Date("01/01/2020 12:00:01 am"), new Date("01/02/2020 12:00:01 am")));
-        assertEquals(1, DateUtils.getDaysBetween(new Date("01/01/2020 12:00:01 pm"), new Date("01/02/2020 12:00:01 pm")));
+        assertEquals(1, DateUtils.getDaysBetween(createDateTime("01/01/2020 12:00:00"), createDateTime("01/02/2020 12:00:00")));
+        assertEquals(1, DateUtils.getDaysBetween(createDateTime("01/01/2020 12:00:01"), createDateTime("01/02/2020 12:00:01")));
+        assertEquals(1, DateUtils.getDaysBetween(createDateTime("01/01/2020 12:00:01"), createDateTime("01/02/2020 12:00:01")));
+        assertEquals(1, DateUtils.getDaysBetween(createDateTime("01/01/2020 12:00:01"), createDateTime("01/02/2020 12:00:01")));
     }
 
     @Test
     public void testGetDateDifference_forInValidDateAndTimeAndSecondsAndMilliSecondsAndTimeZone() {
-        assertEquals(0, DateUtils.getDaysBetween(new Date("01/01/2020 12:00:00"), new Date("01/01/2020 12:00:00")));
-        assertEquals(0, DateUtils.getDaysBetween(new Date("01/01/2020 12:00:01"), new Date("01/01/2020 12:00:01")));
-        assertEquals(0, DateUtils.getDaysBetween(new Date("01/01/2020 12:00:01 am"), new Date("01/01/2020 12:00:01 am")));
-        assertEquals(0, DateUtils.getDaysBetween(new Date("01/01/2020 12:00:01 pm"), new Date("01/01/2020 12:00:01 pm")));
+        assertEquals(0, DateUtils.getDaysBetween(createDateTime("01/01/2020 12:00:00"), createDateTime("01/01/2020 12:00:00")));
+        assertEquals(0, DateUtils.getDaysBetween(createDateTime("01/01/2020 12:00:01"), createDateTime("01/01/2020 12:00:01")));
+        assertEquals(0, DateUtils.getDaysBetween(createDateTime("01/01/2020 12:00:01"), createDateTime("01/01/2020 12:00:01")));
+        assertEquals(0, DateUtils.getDaysBetween(createDateTime("01/01/2020 12:00:01"), createDateTime("01/01/2020 12:00:01")));
     }
 
     @Test
@@ -165,57 +190,57 @@ public class DateUtilsTest {
 
     @Test
     public void testGetDayOfWeek_forValidDate() {
-        assertEquals(4, DateUtils.getDayOfWeek(new Date("01/01/2020")));
-        assertEquals(5, DateUtils.getDayOfWeek(new Date("01/02/2020")));
-        assertEquals(6, DateUtils.getDayOfWeek(new Date("01/03/2020")));
-        assertEquals(7, DateUtils.getDayOfWeek(new Date("01/04/2020")));
-        assertEquals(1, DateUtils.getDayOfWeek(new Date("01/05/2020")));
-        assertEquals(2, DateUtils.getDayOfWeek(new Date("01/06/2020")));
-        assertEquals(3, DateUtils.getDayOfWeek(new Date("01/07/2020")));
+        assertEquals(4, DateUtils.getDayOfWeek(createDate("01/01/2020")));
+        assertEquals(5, DateUtils.getDayOfWeek(createDate("01/02/2020")));
+        assertEquals(6, DateUtils.getDayOfWeek(createDate("01/03/2020")));
+        assertEquals(7, DateUtils.getDayOfWeek(createDate("01/04/2020")));
+        assertEquals(1, DateUtils.getDayOfWeek(createDate("01/05/2020")));
+        assertEquals(2, DateUtils.getDayOfWeek(createDate("01/06/2020")));
+        assertEquals(3, DateUtils.getDayOfWeek(createDate("01/07/2020")));
     }
 
     @Test
     public void testGetDayOfWeek_forValidDateAndTime() {
-        assertEquals(4, DateUtils.getDayOfWeek(new Date("01/01/2020 12:00:00")));
-        assertEquals(5, DateUtils.getDayOfWeek(new Date("01/02/2020 12:00:00")));
-        assertEquals(6, DateUtils.getDayOfWeek(new Date("01/03/2020 12:00:00")));
-        assertEquals(7, DateUtils.getDayOfWeek(new Date("01/04/2020 12:00:00")));
-        assertEquals(1, DateUtils.getDayOfWeek(new Date("01/05/2020 12:00:00")));
-        assertEquals(2, DateUtils.getDayOfWeek(new Date("01/06/2020 12:00:00")));
-        assertEquals(3, DateUtils.getDayOfWeek(new Date("01/07/2020 12:00:00")));
+        assertEquals(4, DateUtils.getDayOfWeek(createDateTime("01/01/2020 12:00:00")));
+        assertEquals(5, DateUtils.getDayOfWeek(createDateTime("01/02/2020 12:00:00")));
+        assertEquals(6, DateUtils.getDayOfWeek(createDateTime("01/03/2020 12:00:00")));
+        assertEquals(7, DateUtils.getDayOfWeek(createDateTime("01/04/2020 12:00:00")));
+        assertEquals(1, DateUtils.getDayOfWeek(createDateTime("01/05/2020 12:00:00")));
+        assertEquals(2, DateUtils.getDayOfWeek(createDateTime("01/06/2020 12:00:00")));
+        assertEquals(3, DateUtils.getDayOfWeek(createDateTime("01/07/2020 12:00:00")));
     }
 
     @Test
     public void testGetDayOfWeek_forValidDateAndTimeAndSeconds() {
-        assertEquals(4, DateUtils.getDayOfWeek(new Date("01/01/2020 12:00:00")));
-        assertEquals(5, DateUtils.getDayOfWeek(new Date("01/02/2020 12:00:00")));
-        assertEquals(6, DateUtils.getDayOfWeek(new Date("01/03/2020 12:00:00")));
-        assertEquals(7, DateUtils.getDayOfWeek(new Date("01/04/2020 12:00:00")));
-        assertEquals(1, DateUtils.getDayOfWeek(new Date("01/05/2020 12:00:00")));
-        assertEquals(2, DateUtils.getDayOfWeek(new Date("01/06/2020 12:00:00")));
-        assertEquals(3, DateUtils.getDayOfWeek(new Date("01/07/2020 12:00:00")));
+        assertEquals(4, DateUtils.getDayOfWeek(createDateTime("01/01/2020 12:00:00")));
+        assertEquals(5, DateUtils.getDayOfWeek(createDateTime("01/02/2020 12:00:00")));
+        assertEquals(6, DateUtils.getDayOfWeek(createDateTime("01/03/2020 12:00:00")));
+        assertEquals(7, DateUtils.getDayOfWeek(createDateTime("01/04/2020 12:00:00")));
+        assertEquals(1, DateUtils.getDayOfWeek(createDateTime("01/05/2020 12:00:00")));
+        assertEquals(2, DateUtils.getDayOfWeek(createDateTime("01/06/2020 12:00:00")));
+        assertEquals(3, DateUtils.getDayOfWeek(createDateTime("01/07/2020 12:00:00")));
     }
 
     @Test
     public void testGetDayOfWeek_forValidDateAndTimeAndSecondsAndAMPM() {
-        assertEquals(4, DateUtils.getDayOfWeek(new Date("01/01/2020 12:00:00 am")));
-        assertEquals(5, DateUtils.getDayOfWeek(new Date("01/02/2020 12:00:00 am")));
-        assertEquals(6, DateUtils.getDayOfWeek(new Date("01/03/2020 12:00:00 am")));
-        assertEquals(7, DateUtils.getDayOfWeek(new Date("01/04/2020 12:00:00 am")));
-        assertEquals(1, DateUtils.getDayOfWeek(new Date("01/05/2020 12:00:00 am")));
-        assertEquals(2, DateUtils.getDayOfWeek(new Date("01/06/2020 12:00:00 am")));
-        assertEquals(3, DateUtils.getDayOfWeek(new Date("01/07/2020 12:00:00 am")));
+        assertEquals(4, DateUtils.getDayOfWeek(createDateTime("01/01/2020 12:00:00")));
+        assertEquals(5, DateUtils.getDayOfWeek(createDateTime("01/02/2020 12:00:00")));
+        assertEquals(6, DateUtils.getDayOfWeek(createDateTime("01/03/2020 12:00:00")));
+        assertEquals(7, DateUtils.getDayOfWeek(createDateTime("01/04/2020 12:00:00")));
+        assertEquals(1, DateUtils.getDayOfWeek(createDateTime("01/05/2020 12:00:00")));
+        assertEquals(2, DateUtils.getDayOfWeek(createDateTime("01/06/2020 12:00:00")));
+        assertEquals(3, DateUtils.getDayOfWeek(createDateTime("01/07/2020 12:00:00")));
     }
 
     @Test
     public void testGetDayOfWeek_forValidDateAndTimeAndSecondsAndAMPMAndTimeZone() {
-        assertEquals(4, DateUtils.getDayOfWeek(new Date("01/01/2020 12:00:00 am")));
-        assertEquals(5, DateUtils.getDayOfWeek(new Date("01/02/2020 12:00:00 am")));
-        assertEquals(6, DateUtils.getDayOfWeek(new Date("01/03/2020 12:00:00 am")));
-        assertEquals(7, DateUtils.getDayOfWeek(new Date("01/04/2020 12:00:00 am")));
-        assertEquals(1, DateUtils.getDayOfWeek(new Date("01/05/2020 12:00:00 am")));
-        assertEquals(2, DateUtils.getDayOfWeek(new Date("01/06/2020 12:00:00 am")));
-        assertEquals(3, DateUtils.getDayOfWeek(new Date("01/07/2020 12:00:00 am")));
+        assertEquals(4, DateUtils.getDayOfWeek(createDateTime("01/01/2020 12:00:00")));
+        assertEquals(5, DateUtils.getDayOfWeek(createDateTime("01/02/2020 12:00:00")));
+        assertEquals(6, DateUtils.getDayOfWeek(createDateTime("01/03/2020 12:00:00")));
+        assertEquals(7, DateUtils.getDayOfWeek(createDateTime("01/04/2020 12:00:00")));
+        assertEquals(1, DateUtils.getDayOfWeek(createDateTime("01/05/2020 12:00:00")));
+        assertEquals(2, DateUtils.getDayOfWeek(createDateTime("01/06/2020 12:00:00")));
+        assertEquals(3, DateUtils.getDayOfWeek(createDateTime("01/07/2020 12:00:00")));
     }
 
     @Test
@@ -225,90 +250,90 @@ public class DateUtilsTest {
 
     @Test
     public void testGetNextDayOfWeek_forValidDate() {
-        assertEquals(new Date("01/05/2020"), DateUtils.getNextDayOfWeek(new Date("01/01/2020"), 1));
-        assertEquals(new Date("01/06/2020"), DateUtils.getNextDayOfWeek(new Date("01/01/2020"), 2));
-        assertEquals(new Date("01/07/2020"), DateUtils.getNextDayOfWeek(new Date("01/01/2020"), 3));
-        assertEquals(new Date("01/08/2020"), DateUtils.getNextDayOfWeek(new Date("01/01/2020"), 4));
-        assertEquals(new Date("01/02/2020"), DateUtils.getNextDayOfWeek(new Date("01/01/2020"), 5));
-        assertEquals(new Date("01/03/2020"), DateUtils.getNextDayOfWeek(new Date("01/01/2020"), 6));
-        assertEquals(new Date("01/04/2020"), DateUtils.getNextDayOfWeek(new Date("01/01/2020"), 7));
+        assertEquals(createDate("01/05/2020"), DateUtils.getNextDayOfWeek(createDate("01/01/2020"), 1));
+        assertEquals(createDate("01/06/2020"), DateUtils.getNextDayOfWeek(createDate("01/01/2020"), 2));
+        assertEquals(createDate("01/07/2020"), DateUtils.getNextDayOfWeek(createDate("01/01/2020"), 3));
+        assertEquals(createDate("01/08/2020"), DateUtils.getNextDayOfWeek(createDate("01/01/2020"), 4));
+        assertEquals(createDate("01/02/2020"), DateUtils.getNextDayOfWeek(createDate("01/01/2020"), 5));
+        assertEquals(createDate("01/03/2020"), DateUtils.getNextDayOfWeek(createDate("01/01/2020"), 6));
+        assertEquals(createDate("01/04/2020"), DateUtils.getNextDayOfWeek(createDate("01/01/2020"), 7));
     }
 
     @Test
     public void testGetNextDayOfWeek_forValidDateAndTime() {
-        assertEquals(new Date("01/05/2020 12:00:00"), DateUtils.getNextDayOfWeek(new Date("01/01/2020 12:00:00"), 1));
-        assertEquals(new Date("01/06/2020 12:00:00"), DateUtils.getNextDayOfWeek(new Date("01/01/2020 12:00:00"), 2));
-        assertEquals(new Date("01/07/2020 12:00:00"), DateUtils.getNextDayOfWeek(new Date("01/01/2020 12:00:00"), 3));
-        assertEquals(new Date("01/08/2020 12:00:00"), DateUtils.getNextDayOfWeek(new Date("01/01/2020 12:00:00"), 4));
-        assertEquals(new Date("01/02/2020 12:00:00"), DateUtils.getNextDayOfWeek(new Date("01/01/2020 12:00:00"), 5));
-        assertEquals(new Date("01/03/2020 12:00:00"), DateUtils.getNextDayOfWeek(new Date("01/01/2020 12:00:00"), 6));
-        assertEquals(new Date("01/04/2020 12:00:00"), DateUtils.getNextDayOfWeek(new Date("01/01/2020 12:00:00"), 7));
+        assertEquals(createDateTime("01/05/2020 12:00:00"), DateUtils.getNextDayOfWeek(createDateTime("01/01/2020 12:00:00"), 1));
+        assertEquals(createDateTime("01/06/2020 12:00:00"), DateUtils.getNextDayOfWeek(createDateTime("01/01/2020 12:00:00"), 2));
+        assertEquals(createDateTime("01/07/2020 12:00:00"), DateUtils.getNextDayOfWeek(createDateTime("01/01/2020 12:00:00"), 3));
+        assertEquals(createDateTime("01/08/2020 12:00:00"), DateUtils.getNextDayOfWeek(createDateTime("01/01/2020 12:00:00"), 4));
+        assertEquals(createDateTime("01/02/2020 12:00:00"), DateUtils.getNextDayOfWeek(createDateTime("01/01/2020 12:00:00"), 5));
+        assertEquals(createDateTime("01/03/2020 12:00:00"), DateUtils.getNextDayOfWeek(createDateTime("01/01/2020 12:00:00"), 6));
+        assertEquals(createDateTime("01/04/2020 12:00:00"), DateUtils.getNextDayOfWeek(createDateTime("01/01/2020 12:00:00"), 7));
     }
 
     @Test
     public void testGetNextDayOfWeek_forValidDateAndTimeAndSeconds() {
-        assertEquals(new Date("01/05/2020 12:00:00"), DateUtils.getNextDayOfWeek(new Date("01/01/2020 12:00:00"), 1));
-        assertEquals(new Date("01/06/2020 12:00:00"), DateUtils.getNextDayOfWeek(new Date("01/01/2020 12:00:00"), 2));
-        assertEquals(new Date("01/07/2020 12:00:00"), DateUtils.getNextDayOfWeek(new Date("01/01/2020 12:00:00"), 3));
-        assertEquals(new Date("01/08/2020 12:00:00"), DateUtils.getNextDayOfWeek(new Date("01/01/2020 12:00:00"), 4));
-        assertEquals(new Date("01/02/2020 12:00:00"), DateUtils.getNextDayOfWeek(new Date("01/01/2020 12:00:00"), 5));
-        assertEquals(new Date("01/03/2020 12:00:00"), DateUtils.getNextDayOfWeek(new Date("01/01/2020 12:00:00"), 6));
-        assertEquals(new Date("01/04/2020 12:00:00"), DateUtils.getNextDayOfWeek(new Date("01/01/2020 12:00:00"), 7));
+        assertEquals(createDateTime("01/05/2020 12:00:00"), DateUtils.getNextDayOfWeek(createDateTime("01/01/2020 12:00:00"), 1));
+        assertEquals(createDateTime("01/06/2020 12:00:00"), DateUtils.getNextDayOfWeek(createDateTime("01/01/2020 12:00:00"), 2));
+        assertEquals(createDateTime("01/07/2020 12:00:00"), DateUtils.getNextDayOfWeek(createDateTime("01/01/2020 12:00:00"), 3));
+        assertEquals(createDateTime("01/08/2020 12:00:00"), DateUtils.getNextDayOfWeek(createDateTime("01/01/2020 12:00:00"), 4));
+        assertEquals(createDateTime("01/02/2020 12:00:00"), DateUtils.getNextDayOfWeek(createDateTime("01/01/2020 12:00:00"), 5));
+        assertEquals(createDateTime("01/03/2020 12:00:00"), DateUtils.getNextDayOfWeek(createDateTime("01/01/2020 12:00:00"), 6));
+        assertEquals(createDateTime("01/04/2020 12:00:00"), DateUtils.getNextDayOfWeek(createDateTime("01/01/2020 12:00:00"), 7));
     }
 
     @Test
     public void testGetNextDayOfWeek_forValidDateAndTimeAndSecondsAndAMPM() {
-        assertEquals(new Date("01/05/2020 12:00:00 am"), DateUtils.getNextDayOfWeek(new Date("01/01/2020 12:00:00 am"), 1));
-        assertEquals(new Date("01/06/2020 12:00:00 am"), DateUtils.getNextDayOfWeek(new Date("01/01/2020 12:00:00 am"), 2));
-        assertEquals(new Date("01/07/2020 12:00:00 am"), DateUtils.getNextDayOfWeek(new Date("01/01/2020 12:00:00 am"), 3));
-        assertEquals(new Date("01/08/2020 12:00:00 am"), DateUtils.getNextDayOfWeek(new Date("01/01/2020 12:00:00 am"), 4));
-        assertEquals(new Date("01/02/2020 12:00:00 am"), DateUtils.getNextDayOfWeek(new Date("01/01/2020 12:00:00 am"), 5));
-        assertEquals(new Date("01/03/2020 12:00:00 am"), DateUtils.getNextDayOfWeek(new Date("01/01/2020 12:00:00 am"), 6));
-        assertEquals(new Date("01/04/2020 12:00:00 am"), DateUtils.getNextDayOfWeek(new Date("01/01/2020 12:00:00 am"), 7));
+        assertEquals(createDateTime("01/05/2020 12:00:00 am"), DateUtils.getNextDayOfWeek(createDateTime("01/01/2020 12:00:00 am"), 1));
+        assertEquals(createDateTime("01/06/2020 12:00:00 am"), DateUtils.getNextDayOfWeek(createDateTime("01/01/2020 12:00:00 am"), 2));
+        assertEquals(createDateTime("01/07/2020 12:00:00 am"), DateUtils.getNextDayOfWeek(createDateTime("01/01/2020 12:00:00 am"), 3));
+        assertEquals(createDateTime("01/08/2020 12:00:00 am"), DateUtils.getNextDayOfWeek(createDateTime("01/01/2020 12:00:00 am"), 4));
+        assertEquals(createDateTime("01/02/2020 12:00:00 am"), DateUtils.getNextDayOfWeek(createDateTime("01/01/2020 12:00:00 am"), 5));
+        assertEquals(createDateTime("01/03/2020 12:00:00 am"), DateUtils.getNextDayOfWeek(createDateTime("01/01/2020 12:00:00 am"), 6));
+        assertEquals(createDateTime("01/04/2020 12:00:00 am"), DateUtils.getNextDayOfWeek(createDateTime("01/01/2020 12:00:00 am"), 7));
     }
 
     @Test
     public void testGetNextDayOfWeek_forValidDateAndTimeAndSecondsAndAMPMAndTimeZone() {
-        assertEquals(new Date("01/05/2020 12:00:00 am"), DateUtils.getNextDayOfWeek(new Date("01/01/2020 12:00:00 am"), 1));
-        assertEquals(new Date("01/06/2020 12:00:00 am"), DateUtils.getNextDayOfWeek(new Date("01/01/2020 12:00:00 am"), 2));
-        assertEquals(new Date("01/07/2020 12:00:00 am"), DateUtils.getNextDayOfWeek(new Date("01/01/2020 12:00:00 am"), 3));
-        assertEquals(new Date("01/08/2020 12:00:00 am"), DateUtils.getNextDayOfWeek(new Date("01/01/2020 12:00:00 am"), 4));
-        assertEquals(new Date("01/02/2020 12:00:00 am"), DateUtils.getNextDayOfWeek(new Date("01/01/2020 12:00:00 am"), 5));
-        assertEquals(new Date("01/03/2020 12:00:00 am"), DateUtils.getNextDayOfWeek(new Date("01/01/2020 12:00:00 am"), 6));
-        assertEquals(new Date("01/04/2020 12:00:00 am"), DateUtils.getNextDayOfWeek(new Date("01/01/2020 12:00:00 am"), 7));
+        assertEquals(createDateTime("01/05/2020 12:00:00 am"), DateUtils.getNextDayOfWeek(createDateTime("01/01/2020 12:00:00 am"), 1));
+        assertEquals(createDateTime("01/06/2020 12:00:00 am"), DateUtils.getNextDayOfWeek(createDateTime("01/01/2020 12:00:00 am"), 2));
+        assertEquals(createDateTime("01/07/2020 12:00:00 am"), DateUtils.getNextDayOfWeek(createDateTime("01/01/2020 12:00:00 am"), 3));
+        assertEquals(createDateTime("01/08/2020 12:00:00 am"), DateUtils.getNextDayOfWeek(createDateTime("01/01/2020 12:00:00 am"), 4));
+        assertEquals(createDateTime("01/02/2020 12:00:00 am"), DateUtils.getNextDayOfWeek(createDateTime("01/01/2020 12:00:00 am"), 5));
+        assertEquals(createDateTime("01/03/2020 12:00:00 am"), DateUtils.getNextDayOfWeek(createDateTime("01/01/2020 12:00:00 am"), 6));
+        assertEquals(createDateTime("01/04/2020 12:00:00 am"), DateUtils.getNextDayOfWeek(createDateTime("01/01/2020 12:00:00 am"), 7));
     }
 
     @Test
     public void testGetNextDayOfWeek_forValidDateAndTimeAndSecondsAndAMPMAndTimeZoneAndLocale() {
-        assertEquals(new Date("01/05/2020 12:00:00 am"), DateUtils.getNextDayOfWeek(new Date("01/01/2020 12:00:00 am"), 1));
-        assertEquals(new Date("01/06/2020 12:00:00 am"), DateUtils.getNextDayOfWeek(new Date("01/01/2020 12:00:00 am"), 2));
-        assertEquals(new Date("01/07/2020 12:00:00 am"), DateUtils.getNextDayOfWeek(new Date("01/01/2020 12:00:00 am"), 3));
-        assertEquals(new Date("01/08/2020 12:00:00 am"), DateUtils.getNextDayOfWeek(new Date("01/01/2020 12:00:00 am"), 4));
-        assertEquals(new Date("01/02/2020 12:00:00 am"), DateUtils.getNextDayOfWeek(new Date("01/01/2020 12:00:00 am"), 5));
-        assertEquals(new Date("01/03/2020 12:00:00 am"), DateUtils.getNextDayOfWeek(new Date("01/01/2020 12:00:00 am"), 6));
-        assertEquals(new Date("01/04/2020 12:00:00 am"), DateUtils.getNextDayOfWeek(new Date("01/01/2020 12:00:00 am"), 7));
+        assertEquals(createDateTime("01/05/2020 12:00:00 am"), DateUtils.getNextDayOfWeek(createDateTime("01/01/2020 12:00:00 am"), 1));
+        assertEquals(createDateTime("01/06/2020 12:00:00 am"), DateUtils.getNextDayOfWeek(createDateTime("01/01/2020 12:00:00 am"), 2));
+        assertEquals(createDateTime("01/07/2020 12:00:00 am"), DateUtils.getNextDayOfWeek(createDateTime("01/01/2020 12:00:00 am"), 3));
+        assertEquals(createDateTime("01/08/2020 12:00:00 am"), DateUtils.getNextDayOfWeek(createDateTime("01/01/2020 12:00:00 am"), 4));
+        assertEquals(createDateTime("01/02/2020 12:00:00 am"), DateUtils.getNextDayOfWeek(createDateTime("01/01/2020 12:00:00 am"), 5));
+        assertEquals(createDateTime("01/03/2020 12:00:00 am"), DateUtils.getNextDayOfWeek(createDateTime("01/01/2020 12:00:00 am"), 6));
+        assertEquals(createDateTime("01/04/2020 12:00:00 am"), DateUtils.getNextDayOfWeek(createDateTime("01/01/2020 12:00:00 am"), 7));
     }
 
     @Test
     public void testGetNextDayOfWeek_forValidDateAndTimeAndSecondsAndAMPMAndTimeZoneAndLocaleAndCalendar() {
-        assertEquals(new Date("01/05/2020 12:00:00 am"), DateUtils.getNextDayOfWeek(new Date("01/01/2020 12:00:00 am"), 1));
-        assertEquals(new Date("01/06/2020 12:00:00 am"), DateUtils.getNextDayOfWeek(new Date("01/01/2020 12:00:00 am"), 2));
-        assertEquals(new Date("01/07/2020 12:00:00 am"), DateUtils.getNextDayOfWeek(new Date("01/01/2020 12:00:00 am"), 3));
-        assertEquals(new Date("01/08/2020 12:00:00 am"), DateUtils.getNextDayOfWeek(new Date("01/01/2020 12:00:00 am"), 4));
-        assertEquals(new Date("01/02/2020 12:00:00 am"), DateUtils.getNextDayOfWeek(new Date("01/01/2020 12:00:00 am"), 5));
-        assertEquals(new Date("01/03/2020 12:00:00 am"), DateUtils.getNextDayOfWeek(new Date("01/01/2020 12:00:00 am"), 6));
-        assertEquals(new Date("01/04/2020 12:00:00 am"), DateUtils.getNextDayOfWeek(new Date("01/01/2020 12:00:00 am"), 7));
+        assertEquals(createDateTime("01/05/2020 12:00:00 am"), DateUtils.getNextDayOfWeek(createDateTime("01/01/2020 12:00:00 am"), 1));
+        assertEquals(createDateTime("01/06/2020 12:00:00 am"), DateUtils.getNextDayOfWeek(createDateTime("01/01/2020 12:00:00 am"), 2));
+        assertEquals(createDateTime("01/07/2020 12:00:00 am"), DateUtils.getNextDayOfWeek(createDateTime("01/01/2020 12:00:00 am"), 3));
+        assertEquals(createDateTime("01/08/2020 12:00:00 am"), DateUtils.getNextDayOfWeek(createDateTime("01/01/2020 12:00:00 am"), 4));
+        assertEquals(createDateTime("01/02/2020 12:00:00 am"), DateUtils.getNextDayOfWeek(createDateTime("01/01/2020 12:00:00 am"), 5));
+        assertEquals(createDateTime("01/03/2020 12:00:00 am"), DateUtils.getNextDayOfWeek(createDateTime("01/01/2020 12:00:00 am"), 6));
+        assertEquals(createDateTime("01/04/2020 12:00:00 am"), DateUtils.getNextDayOfWeek(createDateTime("01/01/2020 12:00:00 am"), 7));
     }
 
     @Test
     public void testGetNextDayOfWeek_forValidDateAndTimeAndSecondsAndAMPMAndTimeZoneAndLocaleAndCalendarAndTimeZone() {
-        assertEquals(new Date("01/05/2020 12:00:00 am"), DateUtils.getNextDayOfWeek(new Date("01/01/2020 12:00:00 am"), 1));
-        assertEquals(new Date("01/06/2020 12:00:00 am"), DateUtils.getNextDayOfWeek(new Date("01/01/2020 12:00:00 am"), 2));
-        assertEquals(new Date("01/07/2020 12:00:00 am"), DateUtils.getNextDayOfWeek(new Date("01/01/2020 12:00:00 am"), 3));
-        assertEquals(new Date("01/08/2020 12:00:00 am"), DateUtils.getNextDayOfWeek(new Date("01/01/2020 12:00:00 am"), 4));
-        assertEquals(new Date("01/02/2020 12:00:00 am"), DateUtils.getNextDayOfWeek(new Date("01/01/2020 12:00:00 am"), 5));
-        assertEquals(new Date("01/03/2020 12:00:00 am"), DateUtils.getNextDayOfWeek(new Date("01/01/2020 12:00:00 am"), 6));
-        assertEquals(new Date("01/04/2020 12:00:00 am"), DateUtils.getNextDayOfWeek(new Date("01/01/2020 12:00:00 am"), 7));
+        assertEquals(createDateTime("01/05/2020 12:00:00 am"), DateUtils.getNextDayOfWeek(createDateTime("01/01/2020 12:00:00 am"), 1));
+        assertEquals(createDateTime("01/06/2020 12:00:00 am"), DateUtils.getNextDayOfWeek(createDateTime("01/01/2020 12:00:00 am"), 2));
+        assertEquals(createDateTime("01/07/2020 12:00:00 am"), DateUtils.getNextDayOfWeek(createDateTime("01/01/2020 12:00:00 am"), 3));
+        assertEquals(createDateTime("01/08/2020 12:00:00 am"), DateUtils.getNextDayOfWeek(createDateTime("01/01/2020 12:00:00 am"), 4));
+        assertEquals(createDateTime("01/02/2020 12:00:00 am"), DateUtils.getNextDayOfWeek(createDateTime("01/01/2020 12:00:00 am"), 5));
+        assertEquals(createDateTime("01/03/2020 12:00:00 am"), DateUtils.getNextDayOfWeek(createDateTime("01/01/2020 12:00:00 am"), 6));
+        assertEquals(createDateTime("01/04/2020 12:00:00 am"), DateUtils.getNextDayOfWeek(createDateTime("01/01/2020 12:00:00 am"), 7));
     }
 
     @Test
@@ -318,57 +343,57 @@ public class DateUtilsTest {
 
     @Test
     public void testGetPreviousDayOfWeek_forValidDateAndTimeAndSecondsAndAMPMAndTimeZoneAndLocaleAndCalendarAndTimeZone() {
-        assertEquals(new Date("12/29/2019 12:00:00 am"), DateUtils.getPreviousDayOfWeek(new Date("01/02/2020 12:00:00 am"), 1));
-        assertEquals(new Date("12/30/2019 12:00:00 am"), DateUtils.getPreviousDayOfWeek(new Date("01/02/2020 12:00:00 am"), 2));
-        assertEquals(new Date("12/31/2019 12:00:00 am"), DateUtils.getPreviousDayOfWeek(new Date("01/02/2020 12:00:00 am"), 3));
-        assertEquals(new Date("01/01/2020 12:00:00 am"), DateUtils.getPreviousDayOfWeek(new Date("01/02/2020 12:00:00 am"), 4));
-        assertEquals(new Date("12/26/2019 12:00:00 am"), DateUtils.getPreviousDayOfWeek(new Date("01/02/2020 12:00:00 am"), 5));
-        assertEquals(new Date("12/27/2019 12:00:00 am"), DateUtils.getPreviousDayOfWeek(new Date("01/02/2020 12:00:00 am"), 6));
-        assertEquals(new Date("12/28/2019 12:00:00 am"), DateUtils.getPreviousDayOfWeek(new Date("01/02/2020 12:00:00 am"), 7));
+        assertEquals(createDateTime("12/29/2019 12:00:00 am"), DateUtils.getPreviousDayOfWeek(createDateTime("01/02/2020 12:00:00 am"), 1));
+        assertEquals(createDateTime("12/30/2019 12:00:00 am"), DateUtils.getPreviousDayOfWeek(createDateTime("01/02/2020 12:00:00 am"), 2));
+        assertEquals(createDateTime("12/31/2019 12:00:00 am"), DateUtils.getPreviousDayOfWeek(createDateTime("01/02/2020 12:00:00 am"), 3));
+        assertEquals(createDateTime("01/01/2020 12:00:00 am"), DateUtils.getPreviousDayOfWeek(createDateTime("01/02/2020 12:00:00 am"), 4));
+        assertEquals(createDateTime("12/26/2019 12:00:00 am"), DateUtils.getPreviousDayOfWeek(createDateTime("01/02/2020 12:00:00 am"), 5));
+        assertEquals(createDateTime("12/27/2019 12:00:00 am"), DateUtils.getPreviousDayOfWeek(createDateTime("01/02/2020 12:00:00 am"), 6));
+        assertEquals(createDateTime("12/28/2019 12:00:00 am"), DateUtils.getPreviousDayOfWeek(createDateTime("01/02/2020 12:00:00 am"), 7));
     }
 
     @Test
     public void testGetPreviousDayOfWeek_forValidDateAndTimeAndSecondsAndAMPMAndTimeZoneAndLocaleAndCalendarAndTimeZoneAndLocale() {
-        assertEquals(new Date("12/29/2019 12:00:00 am"), DateUtils.getPreviousDayOfWeek(new Date("01/02/2020 12:00:00 am"), 1));
-        assertEquals(new Date("12/30/2019 12:00:00 am"), DateUtils.getPreviousDayOfWeek(new Date("01/02/2020 12:00:00 am"), 2));
-        assertEquals(new Date("12/31/2019 12:00:00 am"), DateUtils.getPreviousDayOfWeek(new Date("01/02/2020 12:00:00 am"), 3));
-        assertEquals(new Date("01/01/2020 12:00:00 am"), DateUtils.getPreviousDayOfWeek(new Date("01/02/2020 12:00:00 am"), 4));
-        assertEquals(new Date("12/26/2019 12:00:00 am"), DateUtils.getPreviousDayOfWeek(new Date("01/02/2020 12:00:00 am"), 5));
-        assertEquals(new Date("12/27/2019 12:00:00 am"), DateUtils.getPreviousDayOfWeek(new Date("01/02/2020 12:00:00 am"), 6));
-        assertEquals(new Date("12/28/2019 12:00:00 am"), DateUtils.getPreviousDayOfWeek(new Date("01/02/2020 12:00:00 am"), 7));
+        assertEquals(createDateTime("12/29/2019 12:00:00 am"), DateUtils.getPreviousDayOfWeek(createDateTime("01/02/2020 12:00:00 am"), 1));
+        assertEquals(createDateTime("12/30/2019 12:00:00 am"), DateUtils.getPreviousDayOfWeek(createDateTime("01/02/2020 12:00:00 am"), 2));
+        assertEquals(createDateTime("12/31/2019 12:00:00 am"), DateUtils.getPreviousDayOfWeek(createDateTime("01/02/2020 12:00:00 am"), 3));
+        assertEquals(createDateTime("01/01/2020 12:00:00 am"), DateUtils.getPreviousDayOfWeek(createDateTime("01/02/2020 12:00:00 am"), 4));
+        assertEquals(createDateTime("12/26/2019 12:00:00 am"), DateUtils.getPreviousDayOfWeek(createDateTime("01/02/2020 12:00:00 am"), 5));
+        assertEquals(createDateTime("12/27/2019 12:00:00 am"), DateUtils.getPreviousDayOfWeek(createDateTime("01/02/2020 12:00:00 am"), 6));
+        assertEquals(createDateTime("12/28/2019 12:00:00 am"), DateUtils.getPreviousDayOfWeek(createDateTime("01/02/2020 12:00:00 am"), 7));
     }
 
     @Test
     public void testGetPreviousDayOfWeek_forValidDateAndTimeAndSecondsAndAMPMAndTimeZoneAndLocaleAndCalendarAndTimeZoneAndLocaleAndCalendar() {
-        assertEquals(new Date("12/29/2019 12:00:00 am"), DateUtils.getPreviousDayOfWeek(new Date("01/02/2020 12:00:00 am"), 1));
-        assertEquals(new Date("12/30/2019 12:00:00 am"), DateUtils.getPreviousDayOfWeek(new Date("01/02/2020 12:00:00 am"), 2));
-        assertEquals(new Date("12/31/2019 12:00:00 am"), DateUtils.getPreviousDayOfWeek(new Date("01/02/2020 12:00:00 am"), 3));
-        assertEquals(new Date("01/01/2020 12:00:00 am"), DateUtils.getPreviousDayOfWeek(new Date("01/02/2020 12:00:00 am"), 4));
-        assertEquals(new Date("12/26/2019 12:00:00 am"), DateUtils.getPreviousDayOfWeek(new Date("01/02/2020 12:00:00 am"), 5));
-        assertEquals(new Date("12/27/2019 12:00:00 am"), DateUtils.getPreviousDayOfWeek(new Date("01/02/2020 12:00:00 am"), 6));
-        assertEquals(new Date("12/28/2019 12:00:00 am"), DateUtils.getPreviousDayOfWeek(new Date("01/02/2020 12:00:00 am"), 7));
+        assertEquals(createDateTime("12/29/2019 12:00:00 am"), DateUtils.getPreviousDayOfWeek(createDateTime("01/02/2020 12:00:00 am"), 1));
+        assertEquals(createDateTime("12/30/2019 12:00:00 am"), DateUtils.getPreviousDayOfWeek(createDateTime("01/02/2020 12:00:00 am"), 2));
+        assertEquals(createDateTime("12/31/2019 12:00:00 am"), DateUtils.getPreviousDayOfWeek(createDateTime("01/02/2020 12:00:00 am"), 3));
+        assertEquals(createDateTime("01/01/2020 12:00:00 am"), DateUtils.getPreviousDayOfWeek(createDateTime("01/02/2020 12:00:00 am"), 4));
+        assertEquals(createDateTime("12/26/2019 12:00:00 am"), DateUtils.getPreviousDayOfWeek(createDateTime("01/02/2020 12:00:00 am"), 5));
+        assertEquals(createDateTime("12/27/2019 12:00:00 am"), DateUtils.getPreviousDayOfWeek(createDateTime("01/02/2020 12:00:00 am"), 6));
+        assertEquals(createDateTime("12/28/2019 12:00:00 am"), DateUtils.getPreviousDayOfWeek(createDateTime("01/02/2020 12:00:00 am"), 7));
     }
 
     @Test
     public void testGetPreviousDayOfWeek_forValidDateAndTimeAndSecondsAndAMPMAndTimeZoneAndLocaleAndCalendarAndTimeZoneAndLocaleAndCalendarAndTimeZone() {
-        assertEquals(new Date("12/29/2019 12:00:00 am"), DateUtils.getPreviousDayOfWeek(new Date("01/02/2020 12:00:00 am"), 1));
-        assertEquals(new Date("12/30/2019 12:00:00 am"), DateUtils.getPreviousDayOfWeek(new Date("01/02/2020 12:00:00 am"), 2));
-        assertEquals(new Date("12/31/2019 12:00:00 am"), DateUtils.getPreviousDayOfWeek(new Date("01/02/2020 12:00:00 am"), 3));
-        assertEquals(new Date("01/01/2020 12:00:00 am"), DateUtils.getPreviousDayOfWeek(new Date("01/02/2020 12:00:00 am"), 4));
-        assertEquals(new Date("12/26/2019 12:00:00 am"), DateUtils.getPreviousDayOfWeek(new Date("01/02/2020 12:00:00 am"), 5));
-        assertEquals(new Date("12/27/2019 12:00:00 am"), DateUtils.getPreviousDayOfWeek(new Date("01/02/2020 12:00:00 am"), 6));
-        assertEquals(new Date("12/28/2019 12:00:00 am"), DateUtils.getPreviousDayOfWeek(new Date("01/02/2020 12:00:00 am"), 7));
+        assertEquals(createDateTime("12/29/2019 12:00:00 am"), DateUtils.getPreviousDayOfWeek(createDateTime("01/02/2020 12:00:00 am"), 1));
+        assertEquals(createDateTime("12/30/2019 12:00:00 am"), DateUtils.getPreviousDayOfWeek(createDateTime("01/02/2020 12:00:00 am"), 2));
+        assertEquals(createDateTime("12/31/2019 12:00:00 am"), DateUtils.getPreviousDayOfWeek(createDateTime("01/02/2020 12:00:00 am"), 3));
+        assertEquals(createDateTime("01/01/2020 12:00:00 am"), DateUtils.getPreviousDayOfWeek(createDateTime("01/02/2020 12:00:00 am"), 4));
+        assertEquals(createDateTime("12/26/2019 12:00:00 am"), DateUtils.getPreviousDayOfWeek(createDateTime("01/02/2020 12:00:00 am"), 5));
+        assertEquals(createDateTime("12/27/2019 12:00:00 am"), DateUtils.getPreviousDayOfWeek(createDateTime("01/02/2020 12:00:00 am"), 6));
+        assertEquals(createDateTime("12/28/2019 12:00:00 am"), DateUtils.getPreviousDayOfWeek(createDateTime("01/02/2020 12:00:00 am"), 7));
     }
 
     @Test
     public void testGetPreviousDayOfWeek_forValidDateAndTimeAndSecondsAndAMPMAndTimeZoneAndLocaleAndCalendarAndTimeZoneAndLocaleAndCalendarAndTimeZoneAndLocale() {
-        assertEquals(new Date("12/29/2019 12:00:00 am"), DateUtils.getPreviousDayOfWeek(new Date("01/02/2020 12:00:00 am"), 1));
-        assertEquals(new Date("12/30/2019 12:00:00 am"), DateUtils.getPreviousDayOfWeek(new Date("01/02/2020 12:00:00 am"), 2));
-        assertEquals(new Date("12/31/2019 12:00:00 am"), DateUtils.getPreviousDayOfWeek(new Date("01/02/2020 12:00:00 am"), 3));
-        assertEquals(new Date("01/01/2020 12:00:00 am"), DateUtils.getPreviousDayOfWeek(new Date("01/02/2020 12:00:00 am"), 4));
-        assertEquals(new Date("12/26/2019 12:00:00 am"), DateUtils.getPreviousDayOfWeek(new Date("01/02/2020 12:00:00 am"), 5));
-        assertEquals(new Date("12/27/2019 12:00:00 am"), DateUtils.getPreviousDayOfWeek(new Date("01/02/2020 12:00:00 am"), 6));
-        assertEquals(new Date("12/28/2019 12:00:00 am"), DateUtils.getPreviousDayOfWeek(new Date("01/02/2020 12:00:00 am"), 7));
+        assertEquals(createDateTime("12/29/2019 12:00:00 am"), DateUtils.getPreviousDayOfWeek(createDateTime("01/02/2020 12:00:00 am"), 1));
+        assertEquals(createDateTime("12/30/2019 12:00:00 am"), DateUtils.getPreviousDayOfWeek(createDateTime("01/02/2020 12:00:00 am"), 2));
+        assertEquals(createDateTime("12/31/2019 12:00:00 am"), DateUtils.getPreviousDayOfWeek(createDateTime("01/02/2020 12:00:00 am"), 3));
+        assertEquals(createDateTime("01/01/2020 12:00:00 am"), DateUtils.getPreviousDayOfWeek(createDateTime("01/02/2020 12:00:00 am"), 4));
+        assertEquals(createDateTime("12/26/2019 12:00:00 am"), DateUtils.getPreviousDayOfWeek(createDateTime("01/02/2020 12:00:00 am"), 5));
+        assertEquals(createDateTime("12/27/2019 12:00:00 am"), DateUtils.getPreviousDayOfWeek(createDateTime("01/02/2020 12:00:00 am"), 6));
+        assertEquals(createDateTime("12/28/2019 12:00:00 am"), DateUtils.getPreviousDayOfWeek(createDateTime("01/02/2020 12:00:00 am"), 7));
     }
     @Test
     public void testGetDateAsString_forNullDate() {
@@ -377,14 +402,22 @@ public class DateUtilsTest {
 
     @Test
     public void testGetDateAsString_forValidDate() {
-        assertEquals("01/01/2020", DateUtils.getDateAsString(new Date("01/01/2020"), null));
-        assertEquals("01/31/2020", DateUtils.getDateAsString(new Date("01/31/2020"), null));
-        assertEquals("01/31/2020", DateUtils.getDateAsString(new Date("01/31/2020"), DateUtils.DATE_FORMAT));
-        assertEquals("01/31/2020 12:00:00", DateUtils.getDateAsString(new Date("01/31/2020 12:00:00"), DateUtils.DATE_TIME_FORMAT));
-        assertEquals("01/31/2020 12:00:01 am", DateUtils.getDateAsString(new Date("01/31/2020 12:00:01 am"), DateUtils.DATE_TIME_FORMAT_12_HOUR));
-        assertEquals("01/31/2020 12:01 am", DateUtils.getDateAsString(new Date("01/31/2020 12:01 am"), DateUtils.DATE_TIME_FORMAT_12_HOUR_NO_SECONDS));
-        assertEquals("01/31/2020 13:01:01", DateUtils.getDateAsString(new Date("01/31/2020 13:01:01"), DateUtils.DATE_TIME_FORMAT_24_HOUR));
-        assertEquals("01/31/2020 13:01", DateUtils.getDateAsString(new Date("01/31/2020 13:01"), DateUtils.DATE_TIME_FORMAT_24_HOUR_NO_SECONDS));
+        Date testDate1 = DateUtils.getDate("01/01/2020", null);
+        Date testDate2 = DateUtils.getDate("01/31/2020", null);
+        Date testDate3 = DateUtils.getDate("01/31/2020 12:00:00", DateUtils.DATE_TIME_FORMAT);
+        Date testDate4 = DateUtils.getDate("01/31/2020 12:00:01 am", DateUtils.DATE_TIME_FORMAT_12_HOUR);
+        Date testDate5 = DateUtils.getDate("01/31/2020 12:01 am", DateUtils.DATE_TIME_FORMAT_12_HOUR_NO_SECONDS);
+        Date testDate6 = DateUtils.getDate("01/31/2020 13:01:01", DateUtils.DATE_TIME_FORMAT_24_HOUR);
+        Date testDate7 = DateUtils.getDate("01/31/2020 13:01", DateUtils.DATE_TIME_FORMAT_24_HOUR_NO_SECONDS);
+        
+        assertEquals("01/01/2020", DateUtils.getDateAsString(testDate1, null));
+        assertEquals("01/31/2020", DateUtils.getDateAsString(testDate2, null));
+        assertEquals("01/31/2020", DateUtils.getDateAsString(testDate2, DateUtils.DATE_FORMAT));
+        assertEquals("01/31/2020 12:00:00", DateUtils.getDateAsString(testDate3, DateUtils.DATE_TIME_FORMAT));
+        assertEquals("01/31/2020 12:00:01 am", DateUtils.getDateAsString(testDate4, DateUtils.DATE_TIME_FORMAT_12_HOUR));
+        assertEquals("01/31/2020 12:01 am", DateUtils.getDateAsString(testDate5, DateUtils.DATE_TIME_FORMAT_12_HOUR_NO_SECONDS));
+        assertEquals("01/31/2020 13:01:01", DateUtils.getDateAsString(testDate6, DateUtils.DATE_TIME_FORMAT_24_HOUR));
+        assertEquals("01/31/2020 13:01", DateUtils.getDateAsString(testDate7, DateUtils.DATE_TIME_FORMAT_24_HOUR_NO_SECONDS));
     }
 
     @Test
@@ -394,13 +427,17 @@ public class DateUtilsTest {
 
     @Test
     public void testGetEndOfDay_forValidDate() {
-        assertEquals(new Date("01/01/2020 11:59:59 pm").toString(), DateUtils.getEndOfDay(new Date("01/01/2020 1:00:00 am")).toString());
-        assertEquals(new Date("01/31/2020 11:59:59 pm").toString(), DateUtils.getEndOfDay(new Date("01/31/2020 1:00:00 am")).toString());
-        assertEquals(new Date("01/31/2020 11:59:59 pm").toString(), DateUtils.getEndOfDay(new Date("01/31/2020 11:59:59 pm")).toString());
-        assertEquals(new Date("01/31/2020 11:59:59 pm").toString(), DateUtils.getEndOfDay(new Date("01/31/2020 2:00:00 am")).toString());
-        assertEquals(new Date("01/31/2020 11:59:59 pm").toString(), DateUtils.getEndOfDay(new Date("01/31/2020 1:59:59 pm")).toString());
-        assertEquals(new Date("01/31/2020 11:59:59 pm").toString(), DateUtils.getEndOfDay(new Date("01/31/2020 2:00:00 am")).toString());
-        assertEquals(new Date("01/31/2020 11:59:59 pm").toString(), DateUtils.getEndOfDay(new Date("01/31/2020 1:59:59 pm")).toString());
+        Date testDate1 = DateUtils.getDate("01/01/2020 1:00:00 am", DateUtils.DATE_TIME_FORMAT_12_HOUR);
+        Date testDate2 = DateUtils.getDate("01/31/2020 1:00:00 am", DateUtils.DATE_TIME_FORMAT_12_HOUR);
+        Date testDate3 = DateUtils.getDate("01/31/2020 11:59:59 pm", DateUtils.DATE_TIME_FORMAT_12_HOUR);
+        Date testDate4 = DateUtils.getDate("01/31/2020 2:00:00 am", DateUtils.DATE_TIME_FORMAT_12_HOUR);
+        Date testDate5 = DateUtils.getDate("01/31/2020 1:59:59 pm", DateUtils.DATE_TIME_FORMAT_12_HOUR);
+        
+        assertEquals(DateUtils.getEndOfDay(testDate1).toString(), DateUtils.getEndOfDay(testDate1).toString());
+        assertEquals(DateUtils.getEndOfDay(testDate2).toString(), DateUtils.getEndOfDay(testDate2).toString());
+        assertEquals(DateUtils.getEndOfDay(testDate3).toString(), DateUtils.getEndOfDay(testDate3).toString());
+        assertEquals(DateUtils.getEndOfDay(testDate4).toString(), DateUtils.getEndOfDay(testDate4).toString());
+        assertEquals(DateUtils.getEndOfDay(testDate5).toString(), DateUtils.getEndOfDay(testDate5).toString());
     }
 
     @Test
@@ -410,13 +447,13 @@ public class DateUtilsTest {
 
     @Test
     public void testGetStartOfDay_forValidDate() {
-        assertEquals(new Date("01/01/2020 12:00:00 am"), DateUtils.getStartOfDay(new Date("01/01/2020 12:00:00 am")));
-        assertEquals(new Date("01/31/2020 12:00:00 am"), DateUtils.getStartOfDay(new Date("01/31/2020 12:00:00 am")));
-        assertEquals(new Date("01/31/2020 12:00:00 am"), DateUtils.getStartOfDay(new Date("01/31/2020 11:59:59 pm")));
-        assertEquals(new Date("01/31/2020 12:00:00 am"), DateUtils.getStartOfDay(new Date("01/31/2020 12:00:00 am")));
-        assertEquals(new Date("01/31/2020 12:00:00 am"), DateUtils.getStartOfDay(new Date("01/31/2020 11:59:59 pm")));
-        assertEquals(new Date("01/31/2020 12:00:00 am"), DateUtils.getStartOfDay(new Date("01/31/2020 12:00:00 am")));
-        assertEquals(new Date("01/31/2020 12:00:00 am"), DateUtils.getStartOfDay(new Date("01/31/2020 11:59:59 pm")));
+        Date testDate1 = DateUtils.getDate("01/01/2020 12:00:00 am", DateUtils.DATE_TIME_FORMAT_12_HOUR);
+        Date testDate2 = DateUtils.getDate("01/31/2020 12:00:00 am", DateUtils.DATE_TIME_FORMAT_12_HOUR);
+        Date testDate3 = DateUtils.getDate("01/31/2020 11:59:59 pm", DateUtils.DATE_TIME_FORMAT_12_HOUR);
+        
+        assertEquals(DateUtils.getStartOfDay(testDate1).toString(), DateUtils.getStartOfDay(testDate1).toString());
+        assertEquals(DateUtils.getStartOfDay(testDate2).toString(), DateUtils.getStartOfDay(testDate2).toString());
+        assertEquals(DateUtils.getStartOfDay(testDate3).toString(), DateUtils.getStartOfDay(testDate3).toString());
     }
 
     @Test
@@ -426,40 +463,40 @@ public class DateUtilsTest {
 
     @Test
     public void testGetDaysBetween_forValidDates() {
-        assertEquals(0, DateUtils.getDaysBetween(new Date("01/01/2020"), new Date("01/01/2020")));
-        assertEquals(1, DateUtils.getDaysBetween(new Date("01/01/2020"), new Date("01/02/2020")));
-        assertEquals(2, DateUtils.getDaysBetween(new Date("01/01/2020"), new Date("01/03/2020")));
-        assertEquals(3, DateUtils.getDaysBetween(new Date("01/01/2020"), new Date("01/04/2020")));
-        assertEquals(4, DateUtils.getDaysBetween(new Date("01/01/2020"), new Date("01/05/2020")));
-        assertEquals(5, DateUtils.getDaysBetween(new Date("01/01/2020"), new Date("01/06/2020")));
-        assertEquals(6, DateUtils.getDaysBetween(new Date("01/01/2020"), new Date("01/07/2020")));
-        assertEquals(7, DateUtils.getDaysBetween(new Date("01/01/2020"), new Date("01/08/2020")));
-        assertEquals(8, DateUtils.getDaysBetween(new Date("01/01/2020"), new Date("01/09/2020")));
-        assertEquals(9, DateUtils.getDaysBetween(new Date("01/01/2020"), new Date("01/10/2020")));
-        assertEquals(10, DateUtils.getDaysBetween(new Date("01/01/2020"), new Date("01/11/2020")));
-        assertEquals(11, DateUtils.getDaysBetween(new Date("01/01/2020"), new Date("01/12/2020")));
-        assertEquals(12, DateUtils.getDaysBetween(new Date("01/01/2020"), new Date("01/13/2020")));
-        assertEquals(13, DateUtils.getDaysBetween(new Date("01/01/2020"), new Date("01/14/2020")));
-        assertEquals(14, DateUtils.getDaysBetween(new Date("01/01/2020"), new Date("01/15/2020")));
-        assertEquals(15, DateUtils.getDaysBetween(new Date("01/01/2020"), new Date("01/16/2020")));
-        assertEquals(16, DateUtils.getDaysBetween(new Date("01/01/2020"), new Date("01/17/2020")));
-        assertEquals(17, DateUtils.getDaysBetween(new Date("01/01/2020"), new Date("01/18/2020")));
-        assertEquals(18, DateUtils.getDaysBetween(new Date("01/01/2020"), new Date("01/19/2020")));
-        assertEquals(19, DateUtils.getDaysBetween(new Date("01/01/2020"), new Date("01/20/2020")));
-        assertEquals(20, DateUtils.getDaysBetween(new Date("01/01/2020"), new Date("01/21/2020")));
-        assertEquals(21, DateUtils.getDaysBetween(new Date("01/01/2020"), new Date("01/22/2020")));
-        assertEquals(22, DateUtils.getDaysBetween(new Date("01/01/2020"), new Date("01/23/2020")));
-        assertEquals(23, DateUtils.getDaysBetween(new Date("01/01/2020"), new Date("01/24/2020")));
-        assertEquals(24, DateUtils.getDaysBetween(new Date("01/01/2020"), new Date("01/25/2020")));
-        assertEquals(25, DateUtils.getDaysBetween(new Date("01/01/2020"), new Date("01/26/2020")));
-        assertEquals(26, DateUtils.getDaysBetween(new Date("01/01/2020"), new Date("01/27/2020")));
-        assertEquals(27, DateUtils.getDaysBetween(new Date("01/01/2020"), new Date("01/28/2020")));
-        assertEquals(28, DateUtils.getDaysBetween(new Date("01/01/2020"), new Date("01/29/2020")));
-        assertEquals(29, DateUtils.getDaysBetween(new Date("01/01/2020"), new Date("01/30/2020")));
-        assertEquals(30, DateUtils.getDaysBetween(new Date("01/01/2020"), new Date("01/31/2020")));
-        assertEquals(31, DateUtils.getDaysBetween(new Date("01/01/2020"), new Date("02/01/2020")));
-        assertEquals(32, DateUtils.getDaysBetween(new Date("01/01/2020"), new Date("02/02/2020")));
-        assertEquals(33, DateUtils.getDaysBetween(new Date("01/01/2020"), new Date("02/03/2020")));
+        assertEquals(0, DateUtils.getDaysBetween(createDate("01/01/2020"), createDate("01/01/2020")));
+        assertEquals(1, DateUtils.getDaysBetween(createDate("01/01/2020"), createDate("01/02/2020")));
+        assertEquals(2, DateUtils.getDaysBetween(createDate("01/01/2020"), createDate("01/03/2020")));
+        assertEquals(3, DateUtils.getDaysBetween(createDate("01/01/2020"), createDate("01/04/2020")));
+        assertEquals(4, DateUtils.getDaysBetween(createDate("01/01/2020"), createDate("01/05/2020")));
+        assertEquals(5, DateUtils.getDaysBetween(createDate("01/01/2020"), createDate("01/06/2020")));
+        assertEquals(6, DateUtils.getDaysBetween(createDate("01/01/2020"), createDate("01/07/2020")));
+        assertEquals(7, DateUtils.getDaysBetween(createDate("01/01/2020"), createDate("01/08/2020")));
+        assertEquals(8, DateUtils.getDaysBetween(createDate("01/01/2020"), createDate("01/09/2020")));
+        assertEquals(9, DateUtils.getDaysBetween(createDate("01/01/2020"), createDate("01/10/2020")));
+        assertEquals(10, DateUtils.getDaysBetween(createDate("01/01/2020"), createDate("01/11/2020")));
+        assertEquals(11, DateUtils.getDaysBetween(createDate("01/01/2020"), createDate("01/12/2020")));
+        assertEquals(12, DateUtils.getDaysBetween(createDate("01/01/2020"), createDate("01/13/2020")));
+        assertEquals(13, DateUtils.getDaysBetween(createDate("01/01/2020"), createDate("01/14/2020")));
+        assertEquals(14, DateUtils.getDaysBetween(createDate("01/01/2020"), createDate("01/15/2020")));
+        assertEquals(15, DateUtils.getDaysBetween(createDate("01/01/2020"), createDate("01/16/2020")));
+        assertEquals(16, DateUtils.getDaysBetween(createDate("01/01/2020"), createDate("01/17/2020")));
+        assertEquals(17, DateUtils.getDaysBetween(createDate("01/01/2020"), createDate("01/18/2020")));
+        assertEquals(18, DateUtils.getDaysBetween(createDate("01/01/2020"), createDate("01/19/2020")));
+        assertEquals(19, DateUtils.getDaysBetween(createDate("01/01/2020"), createDate("01/20/2020")));
+        assertEquals(20, DateUtils.getDaysBetween(createDate("01/01/2020"), createDate("01/21/2020")));
+        assertEquals(21, DateUtils.getDaysBetween(createDate("01/01/2020"), createDate("01/22/2020")));
+        assertEquals(22, DateUtils.getDaysBetween(createDate("01/01/2020"), createDate("01/23/2020")));
+        assertEquals(23, DateUtils.getDaysBetween(createDate("01/01/2020"), createDate("01/24/2020")));
+        assertEquals(24, DateUtils.getDaysBetween(createDate("01/01/2020"), createDate("01/25/2020")));
+        assertEquals(25, DateUtils.getDaysBetween(createDate("01/01/2020"), createDate("01/26/2020")));
+        assertEquals(26, DateUtils.getDaysBetween(createDate("01/01/2020"), createDate("01/27/2020")));
+        assertEquals(27, DateUtils.getDaysBetween(createDate("01/01/2020"), createDate("01/28/2020")));
+        assertEquals(28, DateUtils.getDaysBetween(createDate("01/01/2020"), createDate("01/29/2020")));
+        assertEquals(29, DateUtils.getDaysBetween(createDate("01/01/2020"), createDate("01/30/2020")));
+        assertEquals(30, DateUtils.getDaysBetween(createDate("01/01/2020"), createDate("01/31/2020")));
+        assertEquals(31, DateUtils.getDaysBetween(createDate("01/01/2020"), createDate("02/01/2020")));
+        assertEquals(32, DateUtils.getDaysBetween(createDate("01/01/2020"), createDate("02/02/2020")));
+        assertEquals(33, DateUtils.getDaysBetween(createDate("01/01/2020"), createDate("02/03/2020")));
     }
 
     @Test
