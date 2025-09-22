@@ -27,11 +27,6 @@
         </dependency>
         <!-- End| Spring Build Tool: Dependencies -->
 
-        <!-- Start| Spring Build Tools: Dependencies -->
-        <dependency>
-            <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-        </dependency>
         <dependency>
             <groupId>com.github.therapi</groupId>
             <artifactId>therapi-runtime-javadoc</artifactId>
